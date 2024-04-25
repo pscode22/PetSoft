@@ -1,4 +1,5 @@
 'use server';
+
 import { signIn, signOut } from '@/lib/auth/auth-no-edge';
 import prisma from '@/lib/db';
 import { checkAuth, getPetById } from '@/lib/server-utils';
@@ -8,8 +9,7 @@ import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcrypt';
 import { AuthError } from 'next-auth';
 
-// --- user actions ---
-
+// --- user actions --- //
 export async function logIn(prevState: unknown, formData: unknown) {
   if (!(formData instanceof FormData)) {
     return {
@@ -88,8 +88,7 @@ export async function logOut() {
   await signOut({ redirectTo: '/' });
 }
 
-// --- pet actions ---
-
+// --- pet actions --- //
 export async function addPet(pet: unknown) {
   const session = await checkAuth();
   const validatedPet = petFormSchema.safeParse(pet);
@@ -122,7 +121,7 @@ export async function addPet(pet: unknown) {
 
 export async function editPet(petId: unknown, newPetData: unknown) {
   // authentication check
-  // const session = await checkAuth();
+  const session = await checkAuth();
 
   // validation
   const validatedPetId = petIdSchema.safeParse(petId);
@@ -141,11 +140,11 @@ export async function editPet(petId: unknown, newPetData: unknown) {
       message: 'Pet not found.',
     };
   }
-  // if (pet.userId !== session.user.id) {
-  //   return {
-  //     message: "Not authorized.",
-  //   };
-  // }
+  if (pet.userId !== session.user.id) {
+    return {
+      message: "Not authorized.",
+    };
+  }
 
   // database mutation
   try {
@@ -166,7 +165,7 @@ export async function editPet(petId: unknown, newPetData: unknown) {
 
 export async function deletePet(petId: unknown) {
   // // authentication check
-  // const session = await checkAuth();
+  const session = await checkAuth();
 
   // validation
   const validatedPetId = petIdSchema.safeParse(petId);
@@ -176,18 +175,18 @@ export async function deletePet(petId: unknown) {
     };
   }
 
-  // // authorization check
-  // const pet = await getPetById(validatedPetId.data);
-  // if (!pet) {
-  //   return {
-  //     message: "Pet not found.",
-  //   };
-  // }
-  // if (pet.userId !== session.user.id) {
-  //   return {
-  //     message: "Not authorized.",
-  //   };
-  // }
+  // authorization check
+  const pet = await getPetById(validatedPetId.data);
+  if (!pet) {
+    return {
+      message: "Pet not found.",
+    };
+  }
+  if (pet.userId !== session.user.id) {
+    return {
+      message: "Not authorized.",
+    };
+  }
 
   // database mutation
   try {

@@ -5,6 +5,7 @@ export const nextAuthEdgeConfig = {
   pages: {
     signIn: '/login',
   },
+  
   callbacks: {
     authorized: ({ auth, request }) => {
       // runs on every request with middleware
