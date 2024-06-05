@@ -1,11 +1,11 @@
-import Logo from '@/components/logo';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import Link from 'next/link';
+import Logo from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="bg-[#5DC9A8] min-h-screen flex flex-col xl:flex-row items-center justify-center gap-10">
+    <main className="bg-[#5DC9A8] min-h-screen flex flex-col xl:flex-row items-center justify-center gap-10 p-3">
       <Image
         src="https://bytegrad.com/course-assets/react-nextjs/petsoft-preview.png"
         alt="Preview of PetSoft"
@@ -23,7 +23,7 @@ export default function Home() {
           Use PetSoft to easily keep track of pets under your care. Get lifetime
           access for $299.
         </p>
-        <div className="mt-10 space-x-3">
+        <div className="mt-10 space-x-3 mb-3 xl:mb-0">
           <Button asChild>
             <Link href="/signup">Get started</Link>
           </Button>

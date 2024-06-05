@@ -8,6 +8,9 @@ import {  Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcrypt';
 import { AuthError } from 'next-auth';
+import { redirect } from 'next/navigation';
+
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // --- user actions --- //
 export async function logIn(prevState: unknown, formData: unknown) {
@@ -206,26 +209,24 @@ export async function deletePet(petId: unknown) {
 
 // --- payment actions ---
 
-// export async function createCheckoutSession() {
-//   // authentication check
-//   const session = await checkAuth();
+export async function createCheckoutSession() {
+  // authentication check
+  const session = await checkAuth();
 
-//   console.log(session.user.email);
+  // create checkout session
+  const checkoutSession = await stripe.checkout.sessions.create({
+    customer_email: session.user.email,
+    line_items: [
+      {
+        price: 'price_1PBa8ySIdG1f6a7BAxDqlmeJ',
+        quantity: 1,
+      },
+    ],
+    mode: "payment",
+    success_url: `${process.env.CANONICAL_URL}/payment?success=true`,
+    cancel_url: `${process.env.CANONICAL_URL}/payment?cancelled=true`,
+  });
 
-//   // create checkout session
-//   const checkoutSession = await stripe.checkout.sessions.create({
-//     customer_email: session.user.email,
-//     line_items: [
-//       {
-//         price: "price_1OfpJ7FIW685mC8GCahpbCed",
-//         quantity: 1,
-//       },
-//     ],
-//     mode: "payment",
-//     success_url: `${process.env.CANONICAL_URL}/payment?success=true`,
-//     cancel_url: `${process.env.CANONICAL_URL}/payment?cancelled=true`,
-//   });
-
-//   // redirect user
-//   redirect(checkoutSession.url);
-// }
+  // redirect user
+  redirect(checkoutSession.url);
+}
