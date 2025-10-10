@@ -16,6 +16,14 @@ export default function Page({
   const { data: session, update, status } = useSession();
   const router = useRouter();
 
+  const handleCheckout = () => {
+    startTransition(async () => {
+      const res = await createCheckoutSession();
+      if (res?.url) window.location.href = res.url; // ✅ redirect manually
+      else alert(res?.error || "Could not start checkout");
+    });
+  };
+
   return (
     <main className="flex flex-col items-center space-y-10">
       <H1>PetSoft access requires payment</H1>
@@ -33,14 +41,7 @@ export default function Page({
       )}
 
       {!searchParams.success && (
-        <Button
-          disabled={isPending}
-          onClick={async () => {
-            startTransition(async () => {
-              await createCheckoutSession();
-            });
-          }}
-        >
+        <Button disabled={isPending} onClick={handleCheckout}>
           Buy lifetime access for $299
         </Button>
       )}

@@ -5,6 +5,8 @@ import { getUserByEmail } from "../server-utils";
 import { authSchema } from "@/lib/validations";
 import { nextAuthEdgeConfig } from "./auth-edge";
 
+const { log } = console;
+
 const config = {
   ...nextAuthEdgeConfig,
   providers: [
@@ -23,7 +25,7 @@ const config = {
 
         const user = await getUserByEmail(email);
         if (!user) {
-          console.log("No user found");
+          log("No user found");
           return null;
         }
 
@@ -32,7 +34,7 @@ const config = {
           user.hashedPassword
         );
         if (!passwordsMatch) {
-          console.log("Invalid credentials");
+          log("Invalid credentials");
           return null;
         }
 

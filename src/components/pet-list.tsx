@@ -6,7 +6,7 @@ import { usePetListStore } from '@/store/pet-list-store';
 import { usePetSearchQuery } from '@/store/pet-search-store';
 import { Pet } from '@prisma/client';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 export default function PetList() {
   const pets = usePetListStore((state) => state.petList);

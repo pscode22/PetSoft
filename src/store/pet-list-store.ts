@@ -1,10 +1,8 @@
 import { PetEssentials } from '@/lib/types';
-// import { useOptimistic } from 'react';
 import { create } from 'zustand';
 import { toast } from 'sonner';
 import { addPet, deletePet, editPet } from '@/actions/actions';
 import { Pet } from '@prisma/client';
-import { useOptimistic } from 'react';
 
 export type PetListState = {
   petList: Pet[];

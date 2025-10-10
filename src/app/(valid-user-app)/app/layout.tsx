@@ -20,9 +20,6 @@ export default async function Layout({
       <div className="flex flex-col max-w-[1050px] mx-auto px-4 min-h-screen">
         <AppHeader />
 
-        {/* <SearchContextProvider> */}
-        {/* <PetContextProvider data={pets}>{children}</PetContextProvider> */}
-        {/* </SearchContextProvider> */}
         <PetListStoreInitializer petList={pets}>
           {children}
         </PetListStoreInitializer>
