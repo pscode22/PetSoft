@@ -34,16 +34,17 @@ export async function logIn(
 
   const { email, password } = validatedFormData.data;
 
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: { id: true, email: true, hasAccess: true },
-  });
-
-  if (!user) {
-    return { message: "No user found." };
-  }
-
   try {
+  
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, email: true, hasAccess: true },
+    });
+
+    if (!user) {
+      return { message: "No user found." };
+    }
+
     await signIn("credentials", {
       email,
       password,
