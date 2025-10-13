@@ -17,7 +17,10 @@ type ActionResult = {
 };
 
 // --- user actions --- //
-export async function logIn(prevState: unknown, formData: unknown): Promise<ActionResult> {
+export async function logIn(
+  prevState: unknown,
+  formData: unknown
+): Promise<ActionResult> {
   if (!(formData instanceof FormData)) {
     return { message: "Invalid form data." };
   }
@@ -31,8 +34,21 @@ export async function logIn(prevState: unknown, formData: unknown): Promise<Acti
 
   const { email, password } = validatedFormData.data;
 
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true, email: true, hasAccess: true },
+  });
+
+  if (!user) {
+    return { message: "No user found." };
+  }
+
   try {
-    await signIn("credentials", { email, password, redirectTo: "/payment" });
+    await signIn("credentials", {
+      email,
+      password,
+      redirectTo: user.hasAccess ? "/dashboard" : "/payment",
+    });
     return { success: true }; // ✅ add this
   } catch (error) {
     if (error instanceof AuthError) {
@@ -48,7 +64,10 @@ export async function logIn(prevState: unknown, formData: unknown): Promise<Acti
   }
 }
 
-export async function signUp(prevState: unknown, formData: unknown): Promise<ActionResult> {
+export async function signUp(
+  prevState: unknown,
+  formData: unknown
+): Promise<ActionResult> {
   if (!(formData instanceof FormData)) {
     return { message: "Invalid form data." };
   }
@@ -68,7 +87,10 @@ export async function signUp(prevState: unknown, formData: unknown): Promise<Act
       data: { email, hashedPassword },
     });
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
       return { message: "Email already exists." };
     }
     return { message: "Could not create user." };

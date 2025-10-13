@@ -1,16 +1,16 @@
-import { NextAuthConfig } from 'next-auth';
-import prisma from '../db';
+import { NextAuthConfig } from "next-auth";
+import prisma from "../db";
 
 export const nextAuthEdgeConfig = {
   pages: {
-    signIn: '/login',
+    signIn: "/login",
   },
-  
+
   callbacks: {
     authorized: ({ auth, request }) => {
       // runs on every request with middleware
       const isLoggedIn = Boolean(auth?.user);
-      const isTryingToAccessApp = request.nextUrl.pathname.includes('/app');
+      const isTryingToAccessApp = request.nextUrl.pathname.includes("/app");
 
       if (!isLoggedIn && isTryingToAccessApp) {
         return false;
@@ -30,11 +30,11 @@ export const nextAuthEdgeConfig = {
 
       if (
         isLoggedIn &&
-        (request.nextUrl.pathname.includes('/login') ||
-          request.nextUrl.pathname.includes('/signup')) 
-          && auth?.user.hasAccess
+        (request.nextUrl.pathname.includes("/login") ||
+          request.nextUrl.pathname.includes("/signup")) &&
+        auth?.user.hasAccess
       ) {
-        return Response.redirect(new URL('/app/dashboard', request.nextUrl));
+        return Response.redirect(new URL("/app/dashboard", request.nextUrl));
       }
 
       if (isLoggedIn && !isTryingToAccessApp && !auth?.user.hasAccess) {
@@ -55,7 +55,7 @@ export const nextAuthEdgeConfig = {
 
       return false;
     },
-    
+
     jwt: async ({ token, user, trigger }) => {
       if (user) {
         // on sign in
@@ -64,7 +64,7 @@ export const nextAuthEdgeConfig = {
         token.hasAccess = user.hasAccess;
       }
 
-      if (trigger === 'update') {
+      if (trigger === "update") {
         // on every request
         const userFromDb = await prisma.user.findUnique({
           where: {
