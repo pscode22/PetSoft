@@ -35,7 +35,6 @@ export async function logIn(
   const { email, password } = validatedFormData.data;
 
   try {
-  
     const user = await prisma.user.findUnique({
       where: { email },
       select: { id: true, email: true, hasAccess: true },
