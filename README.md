@@ -1,7 +1,7 @@
 🐾 PetSoft
 - Where pet care stays organized.
 
-- PetSoft is a management app for handling pet-related information in one clean system.
+- A management app for handling pet-related information in one clean system.
 - Built to reduce paperwork, confusion, and scattered data.
 
 What it does?
